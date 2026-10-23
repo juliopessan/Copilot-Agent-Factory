@@ -109,4 +109,13 @@ assert(commander.includes('[REVIEW.md](../../REVIEW.md)') && commander.includes(
 for (const requirement of ['Risk tier and rationale', 'Reviewer and independence', 'Round and prior review reference', 'NOT OBSERVED', 'human reference for risk acceptance']) {
   assert(reviewReport.includes(requirement), `Missing review report field: ${requirement}`);
 }
+const projectReview = readFileSync(join(root, 'templates/REVIEW.md'), 'utf8');
+assert(projectReview.includes('(../REVIEW.md)') && projectReview.includes('never overrides it'), 'Project review guide must defer to the shared policy');
+for (const requirement of [
+  'What Failure Looks Like Here', 'Do Not Flag', 'Repeated Findings Become Rules', 'Reviewer Regression Cases',
+  'An agent review is evidence, never approval', 'NOT OBSERVED',
+]) assert(projectReview.includes(requirement), `Missing project review guide contract: ${requirement}`);
+for (const entry of ['.github/copilot-instructions.md', '.github/agents/chief-of-staff.agent.md']) {
+  assert(readFileSync(join(root, entry), 'utf8').includes('templates/REVIEW.md'), `${entry}: missing project review guide`);
+}
 console.log(`PASS: YAML/frontmatter syntax, pinned actions, promotion dependencies, deployment protection contracts, guided onboarding and review policy contracts, Markdown tables/fences, and ${localLinks} local links. Conversational behavior and live review enforcement were not evaluated.`);
